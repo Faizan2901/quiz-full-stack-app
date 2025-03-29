@@ -1,0 +1,48 @@
+<h3>Welcome to Quizz</h3>
+<div>
+    <input [(ngModel)]="limit" type="number" placeholder="Enter question count..." class="w-full p-2 border rounded-lg">
+    <select [(ngModel)]="category" class="w-full p-2 border rounded-lg">
+        <option value="">Select Category</option>
+        <option value="Linux">Linux</option>
+        <option value="DevOps">DevOps</option>
+        <option value="Docker">Docker</option>
+    </select>
+    <button (click)="getQuizQuestions()" class="bg-blue-500 text-white w-full py-2 rounded-lg hover:bg-blue-600 transition">
+        Get Quiz
+    </button>
+</div>
+
+@if (questions.length > 0) 
+ {
+    <div>
+        <h4 class="mt-4">Quiz Questions</h4>
+        <h4 class="mt-4">Quiz Category:- {{category}}</h4>
+    
+        <div *ngFor="let ques of questions; let i = index" class="p-4 border rounded-lg mt-2">
+            <p><b>{{ i + 1 }}. {{ ques.question }}</b></p>
+    
+            <div *ngFor="let key of answerKeys">
+                @if (ques.answers[key])
+                {
+                    <label>
+                        <input type="radio" [name]="'q' + i" [value]="key" [(ngModel)]="selectedAnswers[i]">
+                        {{ ques.answers[key] }}
+                    </label>
+                }
+                
+            </div>
+        </div>
+    
+        <button (click)="submitQuiz()" class="bg-green-500 text-white w-full py-2 rounded-lg hover:bg-green-600 transition mt-4">
+            Submit Quiz
+        </button>
+        
+        @if (score !== null) 
+        {
+            <div class="text-xl mt-4 text-center">
+                🎯 Your Score: <b>{{ score }} / {{ questions.length }}</b>
+            </div>
+        }
+        
+    </div>
+ }
