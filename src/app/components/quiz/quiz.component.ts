@@ -2,16 +2,20 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { QuizService } from '../../services/quiz.service';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-quiz',
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule,CommonModule,RouterLink],
   templateUrl: './quiz.component.html',
   styleUrl: './quiz.component.scss'
 })
 export class QuizComponent {
 
   quizService=inject(QuizService);
+  authService=inject(AuthService);
+  router=inject(Router);
   questions:any[]=[];
   limit:number=0;
   category:string='';
@@ -20,14 +24,25 @@ export class QuizComponent {
   score:number=0;
 
 
-  getQuizQuestions(){
-    this.quizService.getQuizQuestions(this.limit,this.category).subscribe(
-      (data)=>{
-        this.questions=data;
+  getQuizQuestions() {
+    const token = this.authService.getToken();
+  
+    if (!token) {
+      console.error("No token found! Please log in.");
+      return;
+    }
+  
+    this.quizService.getQuizQuestions(this.limit, this.category, token).subscribe(
+      (data) => {
+        this.questions = data;
+        console.log("Fetched Questions:", this.questions); 
+      },
+      (error) => {
+        console.error("Error fetching quiz questions:", error);
       }
-    )
-    console.log(this.questions);
+    );
   }
+  
   submitQuiz(){
     this.quizService.submitQuiz(this.selectedAnswers,this.questions).subscribe(
       (score)=>{
@@ -35,5 +50,12 @@ export class QuizComponent {
       }
     )
   }
+
+  logout() 
+  {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+  }
+  
 
 }

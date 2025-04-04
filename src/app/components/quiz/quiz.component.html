@@ -1,4 +1,7 @@
 <h3>Welcome to Quizz</h3>
+<button (click)="logout()" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition float-right">
+    Logout
+</button>
 <div>
     <input [(ngModel)]="limit" type="number" placeholder="Enter question count..." class="w-full p-2 border rounded-lg">
     <select [(ngModel)]="category" class="w-full p-2 border rounded-lg">
